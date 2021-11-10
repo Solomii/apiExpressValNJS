@@ -19,9 +19,9 @@ app.post("/welcome", auth, (req, res) => {
 app.post("/register", async (req, res) => {
 
   try {
-    const { first_name, last_name,age, email, password } = req.body;
+    const { first_name, last_name, age, email, password } = req.body;
 
-   if (!(email && password && first_name && last_name )) {
+   if (!(first_name && last_name && age && email && password  )) {
       res.status(400).json({ message:"All input is required"});
     }
 
