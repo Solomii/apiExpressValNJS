@@ -16,13 +16,11 @@ app.post("/welcome", auth, (req, res) => {
   res.status(200).send("Welcome");
 });
 
-// Register
 app.post("/register", async (req, res) => {
 
   try {
     const { first_name, last_name,age, email, password } = req.body;
 
-    // Validate user input
    if (!(email && password && first_name && last_name )) {
       res.status(400).json({ message:"All input is required"});
     }
@@ -35,7 +33,6 @@ app.post("/register", async (req, res) => {
 
     encryptedPassword = await bcrypt.hash(password, 10);
 
-    // Create user in our database
     const user = await User.create({
       first_name: first_name,
       last_name: last_name,
@@ -44,7 +41,6 @@ app.post("/register", async (req, res) => {
       password: encryptedPassword,
     });
 
-    // Create token
     const token = jwt.sign(
       { user_id: user._id, email },
       process.env.TOKEN_KEY,
@@ -52,10 +48,9 @@ app.post("/register", async (req, res) => {
         expiresIn: "2h",
       }
     );
-    // save user token
+    
     user.token = token;
 
-    // return new user
     res.status(201).json({ user });
   } catch (err) {
     console.log(err);
