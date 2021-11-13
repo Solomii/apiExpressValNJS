@@ -28,7 +28,7 @@ app.post("/register", async (req, res) => {
     const oldUser = await User.findOne({ email });
 
     if (oldUser) {
-       res.status(409).send("User Already Exist. Please Login");
+      res.status(409).json({message: "User Already Exist. Please Login"});
     }
 
     encryptedPassword = await bcrypt.hash(password, 10);

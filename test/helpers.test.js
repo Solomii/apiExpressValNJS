@@ -15,6 +15,15 @@ const should = chai.should();
 
 chai.use(chaiHttp);
 
+    const user = {
+      first_name: "Solomiia",
+      last_name: "Kush",
+      age: 30,
+      email: "ss@gmail.com",
+      password: "12345678"
+      
+}
+    
 describe("User", () => {
   beforeEach((done) => {
     User.remove({}, (err) => {
@@ -25,14 +34,7 @@ describe("User", () => {
 
 describe('POST /register', () => {
   it('should create a new user', (done) => {
-    let user = {
-      first_name: "Solomiia",
-      last_name: "Kush",
-      age: 30,
-      email: "sa@gmail.com",
-      password: "12345678"
-      
-    }
+
     chai.request(app)
       .post('/register')
       .send(user)
@@ -44,6 +46,28 @@ describe('POST /register', () => {
         res.body.user.should.have.property('age');
         res.body.user.should.have.property('email');
         res.body.user.should.have.property( 'password');
+        done();
+      });
+  });
+
+});
+
+describe('POST /register', () => {
+  it('should return error when user exists', (done) => {
+    // let user = {
+    //   first_name: "Solomiia",
+    //   last_name: "Kush",
+    //   age: 30,
+    //   email: "sa@gmail.com",
+    //   password: "12345678"
+      
+    // }
+    chai.request(app)
+      .post('/register')
+      .send(user)
+      .end((err, res) => {
+        res.should.have.status(409);
+        res.body.should.have.property('message').eql('User Already Exist. Please Login');
         done();
       });
   });
