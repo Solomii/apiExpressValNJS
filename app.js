@@ -51,7 +51,12 @@ app.post("/register", async (req, res) => {
     
     user.token = token;
 
-    res.status(201).json({ user });
+    res.status(201).json({
+      message: "User successfully added!",
+      user,
+      success: true,
+      error:false
+    });
   } catch (err) {
     console.log(err);
   }
