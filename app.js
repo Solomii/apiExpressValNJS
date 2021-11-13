@@ -6,11 +6,22 @@ const jwt = require("jsonwebtoken");
 
 const app = express();
 
+// const { body, validationResult } = require('express-validator');
+
 const User = require("./model/user");
 const auth = require("./middleware/auth")
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// app.get("/register", async (req, res, next) => {
+//    try {
+//    const users = User.find({});
+//    res.json(users)
+//  } catch (error) {
+//    next(error);
+//  }
+// })
 
 app.post("/welcome", auth, (req, res) => {
   res.status(200).send("Welcome");
@@ -61,5 +72,65 @@ app.post("/register", async (req, res) => {
     console.log(err);
   }
 });
+
+app.patch("/register/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { first_name, last_name, age, email, password } = req.body;
+    // const validationResult = await userSchema.validateAsync({first_name, last_name, age, email, password})
+    
+     const user = User.findOne({
+      _id: id
+     });
+    
+    if (!user) {
+      return next();
+    };
+    encryptedPassword = await bcrypt.hash(password, 10);
+
+    const updateUser = await User.update(
+      { _id: id },
+      { $set:{first_name, last_name, age, email, password:encryptedPassword} },
+      { upsert: true },
+      
+    );
+    res.json({
+      success: true,
+      message: "User successfully update!"
+    })
+
+  } catch (error) {
+    next(error);
+  }
+})
+
+app.delete("/register/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const user = User.findOne({
+      _id: id
+    });
+    if (!user) {
+      return next();
+    }
+
+    await User.remove({
+      _id:id
+    })
+
+    res.json({
+      success: true,
+      message: "User successfully remove!"
+    })
+    
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("*", (req, res) => {
+  res.status(404).json({ message: "Wrong route!", error: true });
+
+})
 
 module.exports = app;
