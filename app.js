@@ -4,6 +4,8 @@ const express = require("express");
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 
+const saltRounds = 10;
+
 const app = express();
 
 // const { body, validationResult } = require('express-validator');
@@ -42,7 +44,7 @@ app.post("/register", async (req, res) => {
       res.status(409).json({message: "User Already Exist. Please Login"});
     }
 
-    encryptedPassword = await bcrypt.hash(password, 10);
+    encryptedPassword = await encryptPassword(password);
 
     const user = await User.create({
       first_name: first_name,
@@ -86,7 +88,7 @@ app.patch("/register/:id", async (req, res, next) => {
     if (!user) {
       return next();
     };
-    encryptedPassword = await bcrypt.hash(password, 10);
+    encryptedPassword = await encryptPassword(password);
 
     const updateUser = await User.update(
       { _id: id },
@@ -133,4 +135,8 @@ app.get("*", (req, res) => {
 
 })
 
-module.exports = app;
+function encryptPassword(password) {
+  return bcrypt.hash(password, saltRounds);
+ 
+}
+module.exports = {app, encryptPassword };

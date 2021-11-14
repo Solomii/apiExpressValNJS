@@ -10,19 +10,26 @@ const mongoose = require("mongoose");
 
 const chai = require('chai');
 const  chaiHttp = require('chai-http');
-const app = require('../app');
+const { app } = require('../app');
 const should = chai.should();
 
 chai.use(chaiHttp);
 
-    const user = {
+const user = {
+      // _id: new ObjectId(),
       first_name: "Solomiia",
       last_name: "Kush",
-      age: 30,
-      email: "ss@gmail.com",
-      password: "12345678"
+      age: 23,
+      email: "ysryg@gmail.com",
+      password: "12345tgf678"
       
 }
+
+//  beforeEach((done) => {
+//   User.remove({}).then(() => {
+//     return User.insertMany( user)
+//   }).then(() => done())
+// })
     
 describe("User", () => {
   beforeEach((done) => {
@@ -73,6 +80,10 @@ describe('POST /register', () => {
   });
 
 });
+
+
+
+
 
   // it("should create a new user", (done) => {
   //   let user = 'Test user'
